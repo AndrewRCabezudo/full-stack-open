@@ -32,11 +32,11 @@ const Course = ({course}) => {
     })
     console.log(course.name)
     return (
-        <div>
-        <Header course={course.name} />
-        <Content parts={course.parts} />
-        <Total sum={total.total} />
-        </div>
+        <dt>
+            <Header course={course.name} />
+            <Content parts={course.parts} />
+            <Total sum={total.total} />
+        </dt>
     )
 }
 
