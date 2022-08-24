@@ -1,4 +1,5 @@
 const Header = (props) => {
+  console.log(props.course)
   return (
     <div>
       <h1>
@@ -52,7 +53,7 @@ const App = () => {
   }
   return (
     <div>
-      <Header course={course} />
+      <Header course={course.name} />
       <Content parts={course.parts} />
       <Total total={course.parts} />
     </div>
