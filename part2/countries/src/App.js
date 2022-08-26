@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import axios from 'axios'
 
-
 const Country = (props) => {
   return (
     <div>{props.name}</div>
@@ -16,8 +15,6 @@ const Weather = (props) => {
     axios
       .get("https://api.openweathermap.org/data/2.5/weather?q=" + props.city + "&appid=" + api_key + "&units=metric")
       .then(response => {
-        console.log(response.data)
-
         const weatherObject = {
           temp: response.data.main.temp,
           wind: response.data.wind.speed,
@@ -25,8 +22,8 @@ const Weather = (props) => {
         setWeather(weatherObject)
       })
   },[api_key, props.city])
+  
   let iString = `http://openweathermap.org/img/wn/${weather.icon}@2x.png`
-  console.log(iString)
   return(
     <div>
       <h3>Weather in {props.city}</h3>
@@ -79,7 +76,6 @@ const RenderCountries = ({value, search}) => {
   }
 }
 
-
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchCountry, setSearchCountry] = useState('')
@@ -104,7 +100,6 @@ const App = () => {
       </form>
       <RenderCountries value={countries} search={searchCountry}/>
 
-      {/* <RenderCountries countries={countries.filter(country => country.toLowerCase().includes(searchCountry.toLowerCase()))} /> */}
     </div>
   )
 }
