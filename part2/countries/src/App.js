@@ -13,7 +13,7 @@ const Weather = (props) => {
   const api_key = process.env.REACT_APP_API_KEY
   useEffect(() => {
     axios
-      .get("https://api.openweathermap.org/data/2.5/weather?q=" + props.city + "&appid=" + api_key + "&units=metric")
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${props.city}&appid=${api_key}&units=metric`)
       .then(response => {
         const weatherObject = {
           temp: response.data.main.temp,

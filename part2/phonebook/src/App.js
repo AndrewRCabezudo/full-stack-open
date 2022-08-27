@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import phoneService from './services/requests'
 
 const FilterForm = (props) => {
   return (
@@ -13,12 +13,12 @@ const Entry = (props) => {
   
   return (
     <dt>
-    {props.name} {props.num}
+    {props.name} {props.num} <button value={props.name} id={props.id} onClick={props.deleteEntry}>delete</button>
     </dt>
   )
 }
 
-const PersonForm = (props) => {
+const EntryForm = (props) => {
   return (
     <form onSubmit={props.onSubmit}>
       <div>name: <input value={props.value} onChange={props.onChange}/></div>
@@ -32,28 +32,61 @@ const PersonForm = (props) => {
 
 const App = () => {
 
-  const [persons, setPersons] = useState([])
+  const [entries, setEntries] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchEntry, setSearchEntry] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    phoneService
+      .getAll()
+      .then(initalEntries => {
+        setEntries(initalEntries)
       })
   }, [])
 
 
-  const addPerson = (event) => {
+  const addEntry = (event) => {
     event.preventDefault()
 
-    if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to the phonebook`)
+    if (entries.some(entry => entry.name === newName)) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        const entry = entries.find(e => e.name === newName)
+        const changedEntry = {...entry, number: newNumber}
+
+        phoneService
+          .update(changedEntry.id, changedEntry)
+          .then(returnedEntry => {
+            setEntries(entries.map(e => e.id !== returnedEntry.id ? e : returnedEntry))
+          })
+          .catch(error => { 
+            alert (
+              `the entry ${entry.name} was already deleted from the server`
+            )
+            setEntries(entries.filter(e => e.id !== entry.id))
+          })
+      }
     } else {
-      const nameObject = {name: newName, number: newNumber}
-      setPersons(persons.concat(nameObject))
+      const entryObject = {name: newName, number: newNumber}
+
+      phoneService
+        .create(entryObject)
+        .then(returnedEntry => {
+          setEntries(entries.concat(returnedEntry))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+  const handleDeleteEntry = (id) => {
+    const name = entries.filter(e => e.id === id)[0].name
+    if (window.confirm(`Delete ${name} ?`)) {
+      phoneService
+      .remove(id)
+      .then(()=> {
+        setEntries(entries.filter(e => e.id !== id))
+      })
     }
   }
   
@@ -67,20 +100,21 @@ const App = () => {
     setSearchEntry(event.target.value)
   }
 
+
   return (
     <div>
       <h2>Phonebook</h2>
       <FilterForm value={searchEntry} onChange={handleSearch}/>
       
       <h2>add a new</h2>
-      <PersonForm onSubmit={addPerson} value={newName} onChange={handleNameChange}
+      <EntryForm onSubmit={addEntry} value={newName} onChange={handleNameChange}
         value2={newNumber} onChange2={handleNumberChange}/>
       
       <h2>Numbers</h2>
       
       <dl>
-        {persons.filter(person => person.name.toLowerCase().includes(searchEntry.toLowerCase())).map(person =>
-          <Entry key={person.name} name={person.name} num={person.number}/>
+        {entries.filter(entry => entry.name.toLowerCase().includes(searchEntry.toLowerCase())).map(entry =>
+          <Entry key={entry.id} name={entry.name} num={entry.number} deleteEntry={() => handleDeleteEntry(entry.id)}/>
          )}
       </dl>
     </div>
