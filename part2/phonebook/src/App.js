@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Notification from './components/Notification'
 import phoneService from './services/requests'
 
 const FilterForm = (props) => {
@@ -36,6 +37,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchEntry, setSearchEntry] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     phoneService
@@ -58,11 +61,16 @@ const App = () => {
           .update(changedEntry.id, changedEntry)
           .then(returnedEntry => {
             setEntries(entries.map(e => e.id !== returnedEntry.id ? e : returnedEntry))
+            setSuccessMessage(`Updated ${newName}'s Phone Number`)
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
           })
           .catch(error => { 
-            alert (
-              `the entry ${entry.name} was already deleted from the server`
-            )
+            setErrorMessage(`Information of ${entry.name} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
             setEntries(entries.filter(e => e.id !== entry.id))
           })
       }
@@ -75,6 +83,10 @@ const App = () => {
           setEntries(entries.concat(returnedEntry))
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
   }
@@ -86,6 +98,12 @@ const App = () => {
       .remove(id)
       .then(()=> {
         setEntries(entries.filter(e => e.id !== id))
+      })
+      .catch(error => { 
+        setErrorMessage(`Information of ${name} has already been removed from server`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
       })
     }
   }
@@ -100,10 +118,10 @@ const App = () => {
     setSearchEntry(event.target.value)
   }
 
-
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification errorMessage={errorMessage} successMessage={successMessage}/>
       <FilterForm value={searchEntry} onChange={handleSearch}/>
       
       <h2>add a new</h2>
