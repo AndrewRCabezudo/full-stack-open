@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Covid, Climate, And The New Denialism",
+    "author": "Edward Snowden",
+    "url": "https://www.edwardsnowden.substack.com",
+    "likes": 226
+}
