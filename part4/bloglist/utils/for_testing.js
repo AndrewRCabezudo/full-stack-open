@@ -71,12 +71,6 @@ const mostLikes = (blogs) => {
     }
   })
   return maxAuthor
-  // return an object that containes:
-
-// {
-//   author: name of author with most likes across all blogs
-//   likes: total number of likes authors has across all blogs
-// }
 }
 
 module.exports = {
