@@ -30,7 +30,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJson = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJson = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson)
       setUser(user)
@@ -73,14 +73,40 @@ const App = () => {
         setBlogTitle('')
         setBlogAuthor('')
         setBlogUrl('')
-        setSuccessMessage(`a new blog ${blogtitle} by ${blogauthor} added`)
+        setSuccessMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
       })
   }
 
+  const addLike = id => {
+    
+    const blog = blogs.find(b => b.id === id)
+    const like = blog.likes + 1
+    const updatedBlog = { ...blog, likes: like }
+
+    blogService
+      .update(id, updatedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        setErrorMessage(`problem updating blog ${blog.title} by ${blog.author}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+        setBlogs(blogs.filter(b => b.id !== id))
+      })
+      setSuccessMessage(`blog ${blog.title} by ${blog.author} was liked`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+  }
+
+
   const handleLogout = () => {
+    //event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
     // empty localstorage completely
     // window.localStorage.clear()
@@ -122,8 +148,8 @@ const App = () => {
         </div> 
       }
       <br />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
+        <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)}/>
       )}
     </div>
   )

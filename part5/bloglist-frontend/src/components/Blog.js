@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({blog}) => {
+const Blog = ({blog, addLike}) => {
   const [clicked, setClicked] = useState(false)
   const [buttonName, setButtonName] = useState('view')
 
@@ -18,7 +18,7 @@ const Blog = ({blog}) => {
       <br />
       {blog.url} 
       <br />
-      likes: {blog.likes}<button onClick={handleLikeClick} style={{ marginLeft: '.5rem' }}>like</button>
+      likes: {blog.likes}<button onClick={addLike} style={{ marginLeft: '.5rem' }}>like</button>
       <br />
       {blog.author}
       <br /> <br />
@@ -38,11 +38,6 @@ const Blog = ({blog}) => {
     } else {
       setButtonName('view')
     }
-  }
-
-  const handleLikeClick = () => {
-    console.log(blog.id)
-    
   }
   
   return(
