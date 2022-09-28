@@ -130,12 +130,18 @@ const App = () => {
       <Notification errorMessage={errorMessage} successMessage={successMessage}/>
 
       { user === null ? 
-        <Togglable buttonLabel='login'>
-          <LoginForm 
-            username={username} password={password} handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)} handleSubmit={handleLogin}
-          />
-        </Togglable> :
+        <div>
+          <Togglable buttonLabel='login'>
+            <LoginForm 
+              username={username} password={password} handleUsernameChange={({ target }) => setUsername(target.value)}
+              handlePasswordChange={({ target }) => setPassword(target.value)} handleSubmit={handleLogin}
+            />
+          </Togglable> 
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog => 
+            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={false}/>
+          )}
+        </div>
+        :
         <div>
           <Logout user={user.name} handleSubmit={handleLogout}/>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
@@ -145,12 +151,16 @@ const App = () => {
               url={blogurl} urlChange={handleUrlChange}
             />
           </Togglable>
+          <br />
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog => {
+            
+            const remove = blog.user.username === user.username ? true : false
+            return (
+            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove}/>
+            )}
+          )}
         </div> 
       }
-      <br />
-      {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)}/>
-      )}
     </div>
   )
 }
