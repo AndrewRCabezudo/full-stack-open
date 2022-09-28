@@ -58,6 +58,19 @@ const App = () => {
     }
   }
 
+  const handleDelete = async (event) => {
+    event.preventDefault()
+    blogService
+      .remove(event.target.value)
+    setBlogs(blogs.filter(b => b.id !== event.target.value))
+    setSuccessMessage(`blog was removed`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+    
+  }
+
+
   const addBlog = (event) => {
     event.preventDefault()
     const blogObject = {
@@ -154,9 +167,9 @@ const App = () => {
           <br />
           {blogs.sort((a,b) => b.likes - a.likes).map(blog => {
             
-            const remove = blog.user.username === user.username ? true : false
+            let remove = blog.user.username === user.username ? true : false
             return (
-            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove}/>
+            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete}/>
             )}
           )}
         </div> 
