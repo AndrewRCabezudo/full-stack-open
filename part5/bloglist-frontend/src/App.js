@@ -17,8 +17,8 @@ const App = () => {
   const [blogtitle, setBlogTitle] = useState('')
   const [blogauthor, setBlogAuthor] = useState('')
   const [blogurl, setBlogUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -26,7 +26,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const App = () => {
     } catch (exception) {
       setErrorMessage('Wrong username or password')
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessage('')
       }, 5000)
     }
   }
@@ -63,11 +63,10 @@ const App = () => {
     blogService
       .remove(event.target.value)
     setBlogs(blogs.filter(b => b.id !== event.target.value))
-    setSuccessMessage(`blog was removed`)
+    setSuccessMessage('blog was removed')
     setTimeout(() => {
-      setSuccessMessage(null)
+      setSuccessMessage('')
     }, 5000)
-    
   }
 
 
@@ -88,13 +87,13 @@ const App = () => {
         setBlogUrl('')
         setSuccessMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
         setTimeout(() => {
-          setSuccessMessage(null)
+          setSuccessMessage('')
         }, 5000)
       })
   }
 
   const addLike = id => {
-    
+
     const blog = blogs.find(b => b.id === id)
     const like = blog.likes + 1
     const updatedBlog = { ...blog, likes: like }
@@ -104,17 +103,17 @@ const App = () => {
       .then(returnedBlog => {
         setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       })
-      .catch(error => {
+      .catch(() => {
         setErrorMessage(`problem updating blog ${blog.title} by ${blog.author}`)
         setTimeout(() => {
-          setErrorMessage(null)
+          setErrorMessage('')
         }, 5000)
         setBlogs(blogs.filter(b => b.id !== id))
       })
-      setSuccessMessage(`blog ${blog.title} by ${blog.author} was liked`)
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
+    setSuccessMessage(`blog ${blog.title} by ${blog.author} was liked`)
+    setTimeout(() => {
+      setSuccessMessage('')
+    }, 5000)
   }
 
 
@@ -142,15 +141,15 @@ const App = () => {
       <h2>blogs</h2>
       <Notification errorMessage={errorMessage} successMessage={successMessage}/>
 
-      { user === null ? 
+      { user === null ?
         <div>
           <Togglable buttonLabel='login'>
-            <LoginForm 
+            <LoginForm
               username={username} password={password} handleUsernameChange={({ target }) => setUsername(target.value)}
               handlePasswordChange={({ target }) => setPassword(target.value)} handleSubmit={handleLogin}
             />
-          </Togglable> 
-          {blogs.sort((a,b) => b.likes - a.likes).map(blog => 
+          </Togglable>
+          {blogs.sort((a,b) => b.likes - a.likes).map(blog =>
             <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={false}/>
           )}
         </div>
@@ -158,7 +157,7 @@ const App = () => {
         <div>
           <Logout user={user.name} handleSubmit={handleLogout}/>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm 
+            <BlogForm
               onSubmit={addBlog} title={blogtitle} titleChange={handleTitleChange}
               author={blogauthor} authorChange={handleAuthorChange}
               url={blogurl} urlChange={handleUrlChange}
@@ -166,13 +165,13 @@ const App = () => {
           </Togglable>
           <br />
           {blogs.sort((a,b) => b.likes - a.likes).map(blog => {
-            
+
             let remove = blog.user.username === user.username ? true : false
             return (
-            <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete}/>
+              <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete}/>
             )}
           )}
-        </div> 
+        </div>
       }
     </div>
   )
