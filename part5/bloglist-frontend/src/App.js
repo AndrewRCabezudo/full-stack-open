@@ -168,7 +168,7 @@ const App = () => {
 
             let remove = blog.user.username === user.username ? true : false
             return (
-              <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete}/>
+              <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete} />
             )}
           )}
         </div>

@@ -31,22 +31,22 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
   }
 
   const expandedBlog = () => (
-    <div>
-      {blog.title} <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>{buttonName}</button>
+    <div className='blog'>
+      <span >{blog.title} {blog.author}</span> <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>{buttonName}</button>
       <br />
-      {blog.url}
+      <span >{blog.url}</span>
       <br />
-      likes: {blog.likes}<button onClick={addLike} style={{ marginLeft: '.5rem' }}>like</button>
+      <span >likes {blog.likes}</span><button id='like' onClick={addLike} style={{ marginLeft: '.5rem' }}>like</button>
       <br />
-      {blog.author}
+      {blog.user.name}
       <br />
       {remove && <button onClick={handleRemove} style={{ backgroundColor: isHovering ? '#ad1457' : '#e91e63', borderRadius: 5, color: 'whitesmoke' }}  onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave} value={blog.id}>remove</button>}
     </div>
   )
   const collapsedBlog = () => (
-    <div>
-      {blog.title} <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>{buttonName}</button>
+    <div className='blog'>
+      {blog.title} {blog.author} <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>{buttonName}</button>
       <br /> <br />
     </div>
   )
