@@ -13,10 +13,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  // const [newBlog, setNewBlog] = useState({})
-  const [blogtitle, setBlogTitle] = useState('')
-  const [blogauthor, setBlogAuthor] = useState('')
-  const [blogurl, setBlogUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [username, setUsername] = useState('')
@@ -70,21 +66,12 @@ const App = () => {
   }
 
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      author: blogauthor,
-      title: blogtitle,
-      url: blogurl,
-    }
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setBlogTitle('')
-        setBlogAuthor('')
-        setBlogUrl('')
         setSuccessMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
         setTimeout(() => {
           setSuccessMessage('')
@@ -124,16 +111,6 @@ const App = () => {
     // window.localStorage.clear()
   }
 
-  const handleTitleChange = (event) => {
-    setBlogTitle(event.target.value)
-  }
-  const handleAuthorChange = (event) => {
-    setBlogAuthor(event.target.value)
-  }
-  const handleUrlChange = (event) => {
-    setBlogUrl(event.target.value)
-  }
-
   const blogFormRef = useRef()
 
   return (
@@ -157,11 +134,7 @@ const App = () => {
         <div>
           <Logout user={user.name} handleSubmit={handleLogout}/>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm
-              onSubmit={addBlog} title={blogtitle} titleChange={handleTitleChange}
-              author={blogauthor} authorChange={handleAuthorChange}
-              url={blogurl} urlChange={handleUrlChange}
-            />
+            <BlogForm createBlog={addBlog} />
           </Togglable>
           <br />
           {blogs.sort((a,b) => b.likes - a.likes).map(blog => {
