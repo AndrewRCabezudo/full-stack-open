@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Logout = ({ user, handleSubmit }) => {
+const Logout = ({ name, handleSubmit }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {user.name} logged-in
-        <button type="submit" style={{ marginLeft: '.5rem' }}>logout</button>
+        {name} logged-in
+        <button id='logout-button' type="submit" style={{ marginLeft: '.5rem' }}>logout</button>
       </form>
     </div>
   )
@@ -14,7 +14,7 @@ const Logout = ({ user, handleSubmit }) => {
 
 Logout.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  user: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired
 }
 
 export default Logout

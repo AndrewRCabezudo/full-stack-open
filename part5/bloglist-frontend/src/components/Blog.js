@@ -36,11 +36,11 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
       <br />
       <span >{blog.url}</span>
       <br />
-      <span >likes {blog.likes}</span><button id='like' onClick={addLike} style={{ marginLeft: '.5rem' }}>like</button>
+      <span>likes {blog.likes}</span><button id='like-button' onClick={addLike} style={{ marginLeft: '.5rem' }}>like</button>
       <br />
       {blog.user.name}
       <br />
-      {remove && <button onClick={handleRemove} style={{ backgroundColor: isHovering ? '#ad1457' : '#e91e63', borderRadius: 5, color: 'whitesmoke' }}  onMouseEnter={handleMouseEnter}
+      {remove && <button id='remove-button' onClick={handleRemove} style={{ backgroundColor: isHovering ? '#ad1457' : '#e91e63', borderRadius: 5, color: 'whitesmoke' }}  onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave} value={blog.id}>remove</button>}
     </div>
   )

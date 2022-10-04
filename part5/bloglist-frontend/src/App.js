@@ -79,16 +79,15 @@ const App = () => {
       })
   }
 
-  const addLike = id => {
-
+  const addLike = (id) => {
     const blog = blogs.find(b => b.id === id)
     const like = blog.likes + 1
     const updatedBlog = { ...blog, likes: like }
 
     blogService
       .update(id, updatedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      .then(() => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
       })
       .catch(() => {
         setErrorMessage(`problem updating blog ${blog.title} by ${blog.author}`)
@@ -132,7 +131,7 @@ const App = () => {
         </div>
         :
         <div>
-          <Logout user={user} handleSubmit={handleLogout}/>
+          <Logout name={user.name} handleSubmit={handleLogout}/>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
@@ -140,6 +139,9 @@ const App = () => {
           {blogs.sort((a,b) => b.likes - a.likes).map(blog => {
 
             let remove = blog.user.username === user.username ? true : false
+            //console.log(remove)
+            // console.log(blog)
+            //console.log(user.username)
             return (
               <Blog key={blog.id} blog={blog} addLike={() => addLike(blog.id)} remove={remove} handleRemove={handleDelete} />
             )}
