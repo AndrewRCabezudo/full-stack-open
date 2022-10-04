@@ -11,9 +11,9 @@ let userId
 
 beforeAll(async () => {
   const newUser = {
-    username: 'newUser',
-    name: 'new user',
-    password: 'password',
+    username: 'Neo',
+    name: 'Thomas Anderson',
+    password: 'wyterabit',
   }
 
   const res = await api

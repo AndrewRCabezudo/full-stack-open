@@ -41,13 +41,13 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
       setUser(user)
+      blogService.setToken(user.token)
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUsername('')
-      setUsername('')
+      setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong username or password')
+      setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage('')
       }, 5000)
@@ -132,7 +132,7 @@ const App = () => {
         </div>
         :
         <div>
-          <Logout user={user.name} handleSubmit={handleLogout}/>
+          <Logout user={user} handleSubmit={handleLogout}/>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>

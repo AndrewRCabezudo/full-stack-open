@@ -5,7 +5,7 @@ const Logout = ({ user, handleSubmit }) => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {user} logged-in
+        {user.name} logged-in
         <button type="submit" style={{ marginLeft: '.5rem' }}>logout</button>
       </form>
     </div>

@@ -36,7 +36,7 @@ const BlogForm = ({ createBlog }) => {
         author: <input data-testid='author' value={blogauthor} onChange={handleAuthorChange} />
         <br/>
         url:  <input data-testid='url' value={blogurl} onChange={handleUrlChange} />
-        <br/> <button type="submit">create</button>
+        <br/> <button id="create-button" type="submit">create</button>
       </form>
     </div>
   )
