@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { useField } from './hooks'
 import {
   Routes,
   Route,
   Link,
- // Navigate,
+  Navigate,
   //useParams,
   useNavigate,
   useMatch
@@ -72,9 +73,10 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+
+  const { handlereset: resetContent, ...content} = useField('content')
+  const { handlereset: resetAuthor, ...author} = useField('author')
+  const { handlereset: resetInfo, ...info} = useField('info')
 
   const navigate = useNavigate()
 
@@ -82,31 +84,39 @@ const CreateNew = (props) => {
     e.preventDefault()
 
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
     navigate('/')
   }
 
+  const handleResetClick = (e) => {
+    e.preventDefault()
+    resetContent()
+    resetAuthor()
+    resetInfo()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button onClick={handleSubmit}>create</button>
+        <button onClick={handleResetClick}>reset</button>
       </form>
     </div>
   )
@@ -134,7 +144,6 @@ const App = () => {
   const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
-  
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
     setNotification(`a new anecdote '${anecdote.content} created!'`)
@@ -159,7 +168,7 @@ const App = () => {
 
   const match = useMatch('/:id')  
   const anecdote = match
-    ? anecdotes.find(note => note.id === Number(match.params.id))    
+    ? anecdotes.find(note => note.id === Number(match.params.id))
     : null
   return (
     <div>
@@ -170,7 +179,7 @@ const App = () => {
         <Route path="/about" element={<About /> } />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
-        <Route path="/:id" element={<Anecdote anecdote={anecdote} />} />
+        <Route path="/:id" element={ anecdote ? <Anecdote anecdote={anecdote} /> : <Navigate replace to="/" />} />
       </Routes>
       <Footer />
     </div>
