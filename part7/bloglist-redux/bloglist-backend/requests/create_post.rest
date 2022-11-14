@@ -1,0 +1,10 @@
+POST http://localhost:3002/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNlcmVhbGtpbGxlciIsImlkIjoiNjMyYmYzMjZiNjkyZTU3ODU4ZTUzODJjIiwiaWF0IjoxNjYzOTEwMTU4LCJleHAiOjE2NjM5MTM3NTh9.2RcTpk4gXt7P44f9Jw3Eh6or8NRaGv0hYNd0AfpEM14
+
+{
+    "title": "Leaks",
+    "author": "Julian Assange",
+    "url": "https://www.wikileaks.org",
+    "likes": 226
+}
