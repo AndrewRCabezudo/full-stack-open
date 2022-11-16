@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addLikeToBlog, setBlogs } from '../reducers/blogReducer'
+import { addLikeToBlog, setBlogs, addCommentToBlog } from '../reducers/blogReducer'
 import { setErrorNotification, setSuccessNotification, clearNotification } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
 
@@ -10,6 +10,8 @@ import {
 } from 'react-router-dom'
 
 const Blog = ({ blog, addLike, remove, handleRemove }) => {
+  const dispatch = useDispatch()
+
   const [isHovering, setIsHovering] = useState(false)
 
   const blogStyle = {
@@ -26,6 +28,16 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
 
   const handleMouseLeave = () => {
     setIsHovering(false)
+  }
+
+  const addComment = async (event) => {
+
+    event.preventDefault()
+    const commentObject = {
+      comment: event.target[0].value
+    }
+    const updatedBlog = await blogService.postComment(blog.id, commentObject)
+    dispatch(addCommentToBlog(updatedBlog))
   }
 
 
@@ -63,6 +75,17 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
           remove
         </button>
       )}
+      <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input data-testid='comment' type='text'/>
+        <button id='comment-button' type='submit'>add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>)
+        }
+      </ul>
+
     </div>
   )
 
