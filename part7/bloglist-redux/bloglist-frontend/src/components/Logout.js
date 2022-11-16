@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux'
 
 const Logout = () => {
   const user = useSelector(state => state.user)
-  console.log(user)
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
   }
@@ -15,7 +14,9 @@ const Logout = () => {
         <div>
           <form onSubmit={handleLogout}>
             {user.name} logged-in
-            <button id='logout-button' type="submit" style={{ marginLeft: '.5rem' }}>logout</button>
+            <br />
+            <br />
+            <button id='logout-button' type="submit" style={{ marginLeft: '0rem' }}>logout</button>
           </form>
         </div>
       }

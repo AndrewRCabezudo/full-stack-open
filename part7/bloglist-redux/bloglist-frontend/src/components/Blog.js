@@ -4,16 +4,18 @@ import { addLikeToBlog, setBlogs } from '../reducers/blogReducer'
 import { setErrorNotification, setSuccessNotification, clearNotification } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
 
+import {
+  Link,
+  useParams
+} from 'react-router-dom'
 
 const Blog = ({ blog, addLike, remove, handleRemove }) => {
-  const [clicked, setClicked] = useState(false)
-  const [buttonName, setButtonName] = useState('view')
   const [isHovering, setIsHovering] = useState(false)
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
+    border: 'none',
     borderWidth: 1,
     marginBottom: 5,
   }
@@ -26,27 +28,15 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
     setIsHovering(false)
   }
 
-  const handleClick = () => {
-    setClicked(!clicked)
-    if (buttonName === 'view') {
-      setButtonName('hide')
-    } else {
-      setButtonName('view')
-    }
-  }
 
   const expandedBlog = () => (
     <div className='blog'>
-      <span>
+      <h1>
         {blog.title} {blog.author}
-      </span>{' '}
-      <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>
-        {buttonName}
-      </button>
+      </h1>{' '}
+      <a href={blog.url}>{blog.url}</a>
       <br />
-      <span>{blog.url}</span>
-      <br />
-      <span>likes {blog.likes}</span>
+      <span>{blog.likes} likes</span>
       <button
         id='like-button'
         onClick={addLike}
@@ -55,7 +45,7 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
         like
       </button>
       <br />
-      {blog.user.name}
+      added by {blog.user.name}
       <br />
       {remove && (
         <button
@@ -75,27 +65,26 @@ const Blog = ({ blog, addLike, remove, handleRemove }) => {
       )}
     </div>
   )
-  const collapsedBlog = () => (
-    <div className='blog'>
-      {blog.title} {blog.author}{' '}
-      <button onClick={handleClick} style={{ marginLeft: '.5rem' }}>
-        {buttonName}
-      </button>
-      <br /> <br />
-    </div>
-  )
 
   return (
     <div style={blogStyle}>
-      {clicked === false ? collapsedBlog() : expandedBlog()}
+      {expandedBlog()}
     </div>
   )
 }
 
-const Blogs = () => {
+const Blogs = ({ id }) => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  }
 
   const handleDelete = async (event) => {
     event.preventDefault()
@@ -127,25 +116,33 @@ const Blogs = () => {
     }, 5000)
   }
 
-  return(
-    <div>
-      { user === '' ?
-        <div>
-          { blogs.slice().sort((a,b) => b.likes - a.likes).map(blog =>
-            <Blog key={blog.id} blog={blog} addLike={() => updateLikes(blog)} remove={false}/>)}
-        </div>
-        :
-        <div>
-          {  blogs.slice().sort((a,b) => b.likes - a.likes).map(blog => {
-            let remove = blog.user.username === user.username ? true : false
-            return (
-              <Blog key={blog.id} blog={blog} addLike={() => updateLikes(blog)} remove={remove} handleRemove={handleDelete} />)}
-          )}
-        </div>
-      }
-    </div>
-  )
-}
+  if (isNaN(id)) {
+    return(
+      <div>
+        {  blogs.slice().sort((a,b) => b.likes - a.likes).map(blog => {
+          return (
+            <div key={blog.id} style={blogStyle}>
+              <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}{' '}</Link>
+            </div>)}
+        )}
+      </div>
+    )
+  } else {
+    const blogId = useParams().id
+    const blog = blogs.find(b => b.id === blogId)
+    if (!blog) {
+      return (
+        <Blogs />
+      )
+    }
 
+    let remove = blog.user.username === user.username ? true : false
+    return (
+      <div>
+        <Blog key={blog.id} blog={blog} addLike={() => updateLikes(blog)} remove={remove} handleRemove={handleDelete} />
+      </div>
+    )
+  }
+}
 
 export default Blogs
