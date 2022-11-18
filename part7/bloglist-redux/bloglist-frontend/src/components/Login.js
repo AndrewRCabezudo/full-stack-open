@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setErrorNotification, clearNotification } from '../reducers/notificationReducer'
 import { setUser } from '../reducers/userReducer'
 
+import { TextField, Button } from '@mui/material'
+
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -40,14 +42,18 @@ const LoginForm = () => {
       {userName === '' ?
         <form onSubmit={handleLogin}>
           <div>
-            username
-            <input id='username' type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
+            <div>
+              <TextField label="username" value={username} onChange={({ target }) => setUsername(target.value)}/>
+            </div>
+            <div>
+              <TextField label="password" type='password' value={password} onChange={({ target }) => setPassword(target.value)} />
+            </div>
+            <div>
+              <Button variant="contained" color="primary" type="submit">
+                login
+              </Button>
+            </div>
           </div>
-          <div>
-            password
-            <input id='password' type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
-          </div>
-          <button id='login-button' type="submit">login</button>
         </form>
         : <div></div>
       }

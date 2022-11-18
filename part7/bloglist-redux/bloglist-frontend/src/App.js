@@ -14,6 +14,8 @@ import { setUser } from './reducers/userReducer'
 import blogService from './services/blogs'
 import userService from './services/users'
 
+import { Container } from '@mui/material'
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -56,6 +58,8 @@ const App = () => {
   const User = ({ users }) => {
     const id = useParams().id
     const user = users.find(n => n.id === id)
+    const blogs = useSelector(state => state.blogs)
+
 
     if (!user) {
       return null
@@ -65,10 +69,14 @@ const App = () => {
         <h2>{user.name}</h2>
         <h4>added blogs</h4>
         <ul>
-          {user.blogs.map(blog =>
-            <li key={blog.id}>
-            blog space
-            </li>
+          {user.blogs.map(blog => {
+            const blogToShow = blogs.find(b => b.id === blog.id)
+            return (
+              <li key={blog.id}>
+                {blogToShow.title}
+              </li>
+            )
+          }
           )}
         </ul>
       </div>
@@ -107,20 +115,21 @@ const App = () => {
   }
 
   return (
+    <Container>
+      <Router>
+        <div>
+          <Link style={padding} to="/">home</Link>
+          <Link style={padding} to="/users">users</Link>
+        </div>
 
-    <Router>
-      <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/users">users</Link>
-      </div>
-
-      <Routes>
-        <Route path="/blogs/:id" element={<Blogs id={1}/>} />
-        <Route path="/users/:id" element={<User users={users} />} />
-        <Route path='/users' element={<Users users={users} />} />
-        <Route path='/' element={<Home />} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/blogs/:id" element={<Blogs id={1}/>} />
+          <Route path="/users/:id" element={<User users={users} />} />
+          <Route path='/users' element={<Users users={users} />} />
+          <Route path='/' element={<Home />} />
+        </Routes>
+      </Router>
+    </Container>
   )
 }
 

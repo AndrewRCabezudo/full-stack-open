@@ -1,20 +1,22 @@
 import { useSelector } from 'react-redux'
 
+import { Alert } from '@mui/material'
+
 const Notification = () => {
   const notification = useSelector(state => state.notification)
   // console.log(notification)
 
   if (notification.type === 'error') {
     return (
-      <div className='error'>
+      <Alert severity="error">
         {notification.message}
-      </div>
+      </Alert>
     )
   } else if (notification.type === 'success') {
     return (
-      <div className='success'>
+      <Alert severity="success">
         {notification.message}
-      </div>
+      </Alert>
     )
   } else if (notification.type === 'clear') {
     return null

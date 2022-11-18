@@ -9,6 +9,15 @@ import {
   useParams
 } from 'react-router-dom'
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@mui/material'
+
 const Blog = ({ blog, addLike, remove, handleRemove }) => {
   const dispatch = useDispatch()
 
@@ -101,13 +110,13 @@ const Blogs = ({ id }) => {
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+  // const blogStyle = {
+  //   paddingTop: 10,
+  //   paddingLeft: 2,
+  //   border: 'solid',
+  //   borderWidth: 1,
+  //   marginBottom: 5,
+  // }
 
   const handleDelete = async (event) => {
     event.preventDefault()
@@ -142,12 +151,22 @@ const Blogs = ({ id }) => {
   if (isNaN(id)) {
     return(
       <div>
-        {  blogs.slice().sort((a,b) => b.likes - a.likes).map(blog => {
-          return (
-            <div key={blog.id} style={blogStyle}>
-              <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}{' '}</Link>
-            </div>)}
-        )}
+        <TableContainer component={Paper}>
+          <Table>
+            <TableBody>
+              {  blogs.slice().sort((a,b) => b.likes - a.likes).map(blog => (
+                <TableRow key={blog.id}>
+                  <TableCell>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </TableCell>
+                  <TableCell>
+                    {blog.author}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     )
   } else {
