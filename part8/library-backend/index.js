@@ -11,20 +11,26 @@ let books = [
     {
       title: "A Scanner Darkly",
       author: "Philip K Dick",
-      published: "Science Fiction",
-      genres: "Doubleday 1977",
+      published: "Doubleday 1977",
+      genres: "Science Fiction",
     },
     {
       title: "Do Androids Dream of Electric Sheep",
       author: "Philip K Dick",
-      published: "Science Fiction",
-      genres: "Doubleday 1968",
+      published: "Doubleday 1968",
+      genres: "Science Fiction",
     },
     {
       title: "The Silmarillion",
       author: "J.R.R Tolkien",
-      published: "Fantasy",
-      genres: "George Allen & Unwin 1977",
+      published: "George Allen & Unwin 1977",
+      genres: "Fantasy",
+    },
+    {
+      title: "The Eye of The World",
+      author: "Robert Jordan",
+      published: "Tor Books 1990",
+      genres: "Fantasy",
     },
     {
       title: "Aké: The Years of Childhood",
@@ -61,7 +67,7 @@ const typeDefs = gql`
     type Query {
       bookCount: Int!
       authorCount: Int!
-      allBooks: [Book!]!
+      allBooks(author: String, genre: String): [Book!]!
       allAuthors: [Author!]!
     }
 
@@ -73,7 +79,35 @@ const resolvers = {
         const authors = [... new Set(books.map((item) => item.author))]
         return authors.length
       },
-      allBooks: () => books,
+      allBooks: (root, args) => {
+        if (args.author && args.genre) {
+          const authorGenreBooks = new Array()
+          books.forEach(book => {
+            if ((book.author === args.author) && (book.genres === args.genre) ) {
+              authorGenreBooks.push(book)
+            }
+          })
+          return authorGenreBooks
+        } else if (args.author) {
+          const authorsBooks = new Array()
+          books.forEach(book => {
+            if (book.author === args.author) {
+              authorsBooks.push(book)
+            }
+          })
+          return authorsBooks
+        } else if (args.genre) {
+          const booksOfGenre = new Array()
+          books.forEach(book => {
+            if (book.genres === args.genre) {
+              booksOfGenre.push(book)
+            }
+          })
+          return booksOfGenre
+        } else {
+          return books
+        }
+      },
       allAuthors: () => {
 
        const authors = new Array()
