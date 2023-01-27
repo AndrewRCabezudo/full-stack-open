@@ -47,6 +47,10 @@ let books = [
 ]
   
 const typeDefs = gql`
+    type Author {
+      name: String!
+      bookCount: Int!
+    }
     type Book {
       title: String!
       author: String!
@@ -54,15 +58,14 @@ const typeDefs = gql`
       genres: String!
       id: ID!
     }
-  
     type Query {
       bookCount: Int!
       authorCount: Int!
       allBooks: [Book!]!
+      allAuthors: [Author!]!
     }
 
 `
-  
 const resolvers = {
     Query: {
       bookCount: () => books.length,
@@ -71,6 +74,22 @@ const resolvers = {
         return authors.length
       },
       allBooks: () => books,
+      allAuthors: () => {
+
+       const authors = new Array()
+
+        books.map(book => {
+          const authortoUpdate =(authors.find(a => a.name === book.author))
+          if (authortoUpdate) {
+            index = authors.findIndex((a => a.name === authortoUpdate.name))
+            authors[index].bookCount = authors[index].bookCount + 1
+          } else {
+            authors.push({name: book.author, bookCount: 1 })
+          }
+        })
+
+        return authors
+      },
     },
 }
 
