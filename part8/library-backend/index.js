@@ -55,6 +55,7 @@ let books = [
 const typeDefs = gql`
     type Author {
       name: String!
+      born: Int
       bookCount: Int!
     }
     type Book {
@@ -69,6 +70,18 @@ const typeDefs = gql`
       authorCount: Int!
       allBooks(author: String, genre: String): [Book!]!
       allAuthors: [Author!]!
+    }
+    type Mutation {
+      addBook(
+        title: String!
+        author: String!
+        published: String!
+        genres: String!
+      ): Book,
+      editAuthor(
+        name: String!
+        setBornTo: Int!
+      ): Author
     }
 
 `
@@ -109,9 +122,7 @@ const resolvers = {
         }
       },
       allAuthors: () => {
-
-       const authors = new Array()
-
+        const authors = new Array()
         books.map(book => {
           const authortoUpdate =(authors.find(a => a.name === book.author))
           if (authortoUpdate) {
@@ -121,10 +132,26 @@ const resolvers = {
             authors.push({name: book.author, bookCount: 1 })
           }
         })
-
         return authors
-      },
+      }
     },
+
+    Mutation: {
+      addBook:(root, args) => {
+        books = books.concat(args)
+        return args
+      },
+      editAuthor:(root, args) => {
+        const author = {name: "", born: ""}
+          books.forEach(book => {
+            if (book.author === args.name) {
+              author.born = args.setBornTo
+              author.name = args.name
+            }
+          })
+        return author
+      }
+     }
 }
 
 const server = new ApolloServer({
